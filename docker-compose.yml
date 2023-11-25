@@ -1,0 +1,50 @@
+version: "3"
+
+networks:
+  network-devops:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.77.0/24
+
+volumes:
+  data-devops:
+
+services:
+  db:
+    image: postgres
+    restart: always
+    networks:
+      network-devops:
+        ipv4_address: 192.168.77.10
+    volumes:
+      - data-devops:/var/lib/postgresql/data:rw
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: worker
+      POSTGRES_PASSWORD: worker
+      POSTGRES_DB: app
+
+  migrate-db:
+    image: image-devops
+    build: .
+    restart: "no"
+    networks:
+      network-devops:
+        ipv4_address: 192.168.77.11
+    links:
+      - db
+    command: python3 manage.py migrate
+
+  run-server:
+    image: image-devops
+    restart: always
+    networks:
+      network-devops:
+        ipv4_address: 192.168.77.12
+    links:
+      - db
+    ports:
+      - 8000:8000
+    command: python3 manage.py runserver 0.0.0.0:8000

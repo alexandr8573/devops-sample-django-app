@@ -29,6 +29,8 @@ services:
 
   migrate-db:
     container_name: migrate-db
+    depends_on:
+      - db
     image: image-devops
     build: .
     restart: "no"
@@ -41,6 +43,8 @@ services:
 
   run-server:
     container_name: run-server
+    depends_on:
+      - migrate-db
     image: image-devops
     restart: always
     networks:
@@ -51,3 +55,4 @@ services:
     ports:
       - 8000:8000
     command: uwsgi --http :8000 --wsgi-file ./parrotsite/wsgi.py
+

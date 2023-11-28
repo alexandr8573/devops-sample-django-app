@@ -1,0 +1,8 @@
+/**
+!/main
+/main/__pycache__
+!/media
+!/parrotsite
+/parrotsite/__pycache__
+!manage.py
+!requirements.txt

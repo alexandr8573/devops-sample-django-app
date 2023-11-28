@@ -1,15 +1,16 @@
-FROM python:3.8
-
-ENV PIP_ROOT_USER_ACTION=ignore
-ENV DJANGO_DB_HOST db
-ENV DJANGO_DB_NAME app
-ENV DJANGO_DB_USER worker
-ENV DJANGO_DB_PASS worker
-ENV DJANGO_DB_PORT 5432
-ENV DJANGO_DEBUG False
+FROM python:3.8.18
 
 WORKDIR /usr/src/app
 
-COPY . .
+COPY requirements.txt ./
 
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+RUN pip install --root-user-action=ignore --upgrade pip && pip install --root-user-action=ignore --no-cache-dir -r requirements.txt
+
+RUN adduser --system --group app
+USER app
+
+COPY --chown=app:app . ./
+
+ENTRYPOINT ["python3", "manage.py"]
+
+CMD ["runserver 0.0.0.0:8000"]

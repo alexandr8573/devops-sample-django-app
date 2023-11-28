@@ -45,7 +45,14 @@ services:
         ipv4_address: 192.168.77.11
     links:
       - db
-    command: python3 manage.py migrate
+    environment:
+      DJANGO_DB_HOST: db
+      DJANGO_DB_NAME: app
+      DJANGO_DB_USER: worker
+      DJANGO_DB_PASS: worker
+      DJANGO_DB_PORT: 5432
+      DJANGO_DEBUG: "False"
+    command: migrate
 
   run-server:
     container_name: run-server
@@ -61,4 +68,11 @@ services:
       - db
     ports:
       - 8000:8000
-    command: uwsgi --http :8000 --wsgi-file ./parrotsite/wsgi.py
+    environment:
+      DJANGO_DB_HOST: db
+      DJANGO_DB_NAME: app
+      DJANGO_DB_USER: worker
+      DJANGO_DB_PASS: worker
+      DJANGO_DB_PORT: 5432
+      DJANGO_DEBUG: "False"
+    entrypoint: uwsgi --http :8000 --wsgi-file ./parrotsite/wsgi.py

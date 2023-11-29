@@ -25,18 +25,23 @@ ____
 
 - install Docker
 - install Docker Compose
+- install git
 
 * Build:
 ```shell
+git clone https://github.com/alexandr8573/devops-sample-django-app.git
+chmod 755 -R ./devops-sample-django-app/
+cd ./devops-sample-django-app/
 docker-compose build
 ```
 
 * start application:
 ```shell
-docker-compose up -d
+docker-compose up -d && docker-compose rm -f
 ```
 
 
 * stop application:
 ```shell
 docker-compose down
+```
